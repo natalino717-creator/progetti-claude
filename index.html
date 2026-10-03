@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Toronero Messina</title>
+<meta name="description" content="Toronero, steak house, pizzeria con forno a legna e sala eventi in via La Farina 185 a Messina. Aperti tutti i giorni dal 2009. Prenota: 090 293 1640.">
+<meta name="theme-color" content="#14100e">
+<meta property="og:type" content="restaurant">
+<meta property="og:title" content="Toronero · Steak house e pizzeria a Messina">
+<meta property="og:description" content="Tagli scelti alla brace, pizza dal forno a legna e una sala eventi da 120 posti. Via La Farina 185, Messina.">
+<meta property="og:locale" content="it_IT">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314100e'/%3E%3Cpath d='M14 18c4 8 10 11 18 11s14-3 18-11c-1 10-6 16-12 18v10l-6 6-6-6V36c-6-2-11-8-12-18z' fill='%23e0953e'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Toronero",
+  "alternateName": "Toronero Ristorante Steak House Pizzeria",
+  "slogan": "Amiamo cucinare",
+  "foundingDate": "2009",
+  "servesCuisine": ["Steak house", "Pizza", "Cucina siciliana", "Cucina italiana"],
+  "telephone": "+39 090 293 1640",
+  "email": "toronerosrl@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Via Giuseppe La Farina 185",
+    "postalCode": "98123",
+    "addressLocality": "Messina",
+    "addressRegion": "ME",
+    "addressCountry": "IT"
+  },
+  "openingHoursSpecification": [
+    {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], "opens": "12:00", "closes": "15:00"},
+    {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], "opens": "19:30", "closes": "23:30"}
+  ],
+  "acceptsReservations": "True",
+  "sameAs": ["https://www.facebook.com/toronerome/"]
+}
+</script>
+</head>
+<body>
+
+<a class="skip" href="#contenuto">Vai al contenuto</a>
+
+<header class="nav" id="top">
+  <div class="nav__inner">
+    <a class="wordmark" href="#top" aria-label="Toronero, torna all'inizio">
+      <svg class="wordmark__mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M8 14c5 10 13 14 24 14s19-4 24-14c-1 13-8 21-16 23v12l-8 8-8-8V37C16 35 9 27 8 14z"/></svg>
+      <span>Toronero</span>
+    </a>
+    <button class="nav__toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
+    <nav class="nav__links" id="nav-links" aria-label="Sezioni">
+      <a href="#tagli">I tagli</a>
+      <a href="#menu">Menu</a>
+      <a href="#sale">Le sale</a>
+      <a href="#eventi">Eventi</a>
+      <a href="#rais">Rais</a>
+      <a class="nav__cta" href="#prenota">Prenota</a>
+    </nav>
+  </div>
+</header>
+
+<main id="contenuto">
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <canvas class="hero__embers" id="embers" aria-hidden="true"></canvas>
+    <div class="hero__inner wrap">
+      <p class="eyebrow">Steak house · Pizzeria · Sala eventi &nbsp;/&nbsp; Messina, dal 2009</p>
+      <h1 class="hero__title" id="hero-title">
+        <span class="hero__line">Toro</span>
+        <span class="hero__line hero__line--indent">nero<span class="hero__dot">.</span></span>
+      </h1>
+      <div class="hero__body">
+        <p class="hero__motto">Amiamo cucinare.</p>
+        <p class="hero__lede">Tagli scelti e di provenienza certificata, brace viva, pizza dal forno a legna. Cinquecento metri quadri in via La Farina, aperti ogni giorno a pranzo e a cena.</p>
+        <div class="hero__actions">
+          <a class="btn btn--fire" href="#prenota">Prenota un tavolo</a>
+          <a class="btn btn--ghost" href="#tagli">Scegli il taglio</a>
+        </div>
+      </div>
+    </div>
+    <dl class="ticker wrap" aria-label="Informazioni rapide">
+      <div class="ticker__item">
+        <dt>Oggi</dt>
+        <dd><span class="status" id="open-status" data-state="unknown">12:00–15:00 · 19:30–23:30</span></dd>
+      </div>
+      <div class="ticker__item">
+        <dt>Dove</dt>
+        <dd>Via La Farina 185, Messina</dd>
+      </div>
+      <div class="ticker__item">
+        <dt>Telefono</dt>
+        <dd><a href="tel:+390902931640">090 293 1640</a></dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- TAGLI -->
+  <section class="cuts" id="tagli" aria-labelledby="cuts-title">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">La macelleria</p>
+        <h2 id="cuts-title">Scegli dal toro.</h2>
+        <p class="section-head__lede">La carne è il nostro punto di forza. Tocca una parte dell'animale per sapere che taglio è e come lo serviamo. Le provenienze cambiano secondo la selezione del giorno: scottona locale, Angus argentino, Wagyu.</p>
+      </header>
+
+      <div class="cuts__grid">
+        <figure class="bull" aria-label="Schema dei tagli del manzo">
+          <svg viewBox="0 0 600 340" role="group" aria-label="Tagli selezionabili">
+            <g class="bull__static" aria-hidden="true">
+              <path class="bull__horn" d="M52 92 C30 70 28 48 40 34 C40 54 52 72 70 86 Z"/>
+              <path class="bull__horn" d="M82 86 C82 62 94 46 110 40 C102 58 98 74 98 92 Z"/>
+              <polygon class="bull__part" points="18,118 60,88 98,96 104,160 74,188 36,180 14,148"/>
+              <polygon class="bull__leg" points="196,222 238,222 234,322 206,322"/>
+              <polygon class="bull__leg" points="244,224 270,224 266,316 246,316"/>
+              <polygon class="bull__leg" points="452,234 500,250 496,322 468,322"/>
+              <polygon class="bull__leg" points="420,228 448,234 444,316 422,316"/>
+              <path class="bull__tail" d="M514 96 C540 120 548 160 540 196 L548 214 L532 206"/>
+              <line class="bull__ground" x1="0" y1="326" x2="600" y2="326"/>
+            </g>
+            <polygon class="cut" data-cut="collo" tabindex="0" role="button" aria-label="Collo e spalla" points="98,96 186,78 192,222 132,212 104,160"/>
+            <polygon class="cut" data-cut="costata" tabindex="0" role="button" aria-label="Costata e tomahawk" points="186,78 330,70 330,150 190,150"/>
+            <polygon class="cut" data-cut="lombata" tabindex="0" role="button" aria-label="Controfiletto e fiorentina" points="330,70 424,76 424,148 330,150"/>
+            <polygon class="cut" data-cut="filetto" tabindex="0" role="button" aria-label="Filetto" points="330,150 424,148 424,174 330,176"/>
+            <polygon class="cut" data-cut="petto" tabindex="0" role="button" aria-label="Petto e pancia" points="190,150 330,150 330,176 424,174 426,228 192,222"/>
+            <polygon class="cut" data-cut="scamone" tabindex="0" role="button" aria-label="Scamone" points="424,76 504,86 518,132 424,148"/>
+            <polygon class="cut" data-cut="fesa" tabindex="0" role="button" aria-label="Fesa e coscia" points="424,148 518,132 532,200 502,250 426,228"/>
+            <g class="bull__labels" aria-hidden="true">
+              <text x="140" y="150">1</text>
+              <text x="258" y="116">2</text>
+              <text x="377" y="116">3</text>
+              <text x="377" y="167">4</text>
+              <text x="300" y="205">5</text>
+              <text x="466" y="116">6</text>
+              <text x="474" y="190">7</text>
+            </g>
+          </svg>
+          <figcaption>Schema indicativo dei tagli bovini. Tocca o usa Tab per esplorare.</figcaption>
+        </figure>
+
+        <article class="cut-card" id="cut-card" aria-live="polite">
+          <p class="cut-card__num" id="cut-num">03</p>
+          <h3 class="cut-card__name" id="cut-name">Controfiletto e fiorentina</h3>
+          <p class="cut-card__desc" id="cut-desc">La lombata: da qui nascono lo striploin e, con l'osso a T, la fiorentina. Fibra compatta, grasso di copertura che sulla brace diventa crosta.</p>
+          <dl class="cut-card__specs">
+            <div><dt>Al Toronero</dt><dd id="cut-dish">Controfiletto di scottona</dd></div>
+            <div><dt>Cottura</dt><dd id="cut-cook">Al sangue o media, sulla brace</dd></div>
+          </dl>
+          <p class="cut-card__price" id="cut-price"><span>da</span> €24</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section class="menu" id="menu" aria-labelledby="menu-title">
+    <div class="wrap">
+      <header class="section-head section-head--row">
+        <div>
+          <p class="eyebrow">Il menu</p>
+          <h2 id="menu-title">Brace, forno, cucina.</h2>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Sezioni del menu">
+          <button class="tab" role="tab" id="tab-brace" aria-controls="panel-brace" aria-selected="true">Dalla brace</button>
+          <button class="tab" role="tab" id="tab-pizza" aria-controls="panel-pizza" aria-selected="false" tabindex="-1">Forno a legna</button>
+          <button class="tab" role="tab" id="tab-cucina" aria-controls="panel-cucina" aria-selected="false" tabindex="-1">Cucina</button>
+        </div>
+      </header>
+
+      <div class="panel" role="tabpanel" id="panel-brace" aria-labelledby="tab-brace">
+        <ul class="dishes">
+          <li class="dish"><span class="dish__name">Controfiletto di scottona</span><span class="dish__lead"></span><span class="dish__price">24</span><p class="dish__note">Striploin alla brace, servito in tagliata o intero.</p></li>
+          <li class="dish"><span class="dish__name">Costata e tomahawk</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">al peso</span><p class="dish__note">Scottona, Angus argentino o Wagyu, secondo la selezione del giorno.</p></li>
+          <li class="dish"><span class="dish__name">Fiorentina</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">al peso</span><p class="dish__note">L'osso a T con controfiletto e filetto. Per due o più.</p></li>
+          <li class="dish"><span class="dish__name">Tagliata di manzo</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">in sala</span><p class="dish__note">Uno dei piatti più richiesti di casa.</p></li>
+          <li class="dish"><span class="dish__name">Grigliata bianca</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">in sala</span><p class="dish__note">Carni bianche miste alla brace.</p></li>
+          <li class="dish"><span class="dish__name">Stinco di maiale</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">in sala</span><p class="dish__note">Cottura lenta, pelle croccante.</p></li>
+          <li class="dish"><span class="dish__name">Burger di Wagyu</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">in sala</span><p class="dish__note">Macinato di Wagyu, pane morbido. Nel menu anche altri hamburger.</p></li>
+          <li class="dish"><span class="dish__name">Tartare e carpaccio</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">in sala</span><p class="dish__note">Manzo crudo, tagliato al coltello o in fette sottili.</p></li>
+        </ul>
+      </div>
+
+      <div class="panel" role="tabpanel" id="panel-pizza" aria-labelledby="tab-pizza" hidden>
+        <ul class="dishes">
+          <li class="dish"><span class="dish__name">Margherita</span><span class="dish__lead"></span><span class="dish__price">8</span><p class="dish__note">Pomodoro, fiordilatte, basilico.</p></li>
+          <li class="dish"><span class="dish__name">Caprese</span><span class="dish__lead"></span><span class="dish__price">10</span><p class="dish__note">Il gusto della Caprese, dal forno a legna.</p></li>
+          <li class="dish"><span class="dish__name">Capricciosa</span><span class="dish__lead"></span><span class="dish__price">12</span><p class="dish__note">La classica, ricca.</p></li>
+          <li class="dish"><span class="dish__name">Pistacia</span><span class="dish__lead"></span><span class="dish__price">14</span><p class="dish__note">Dedicata al pistacchio siciliano.</p></li>
+          <li class="dish"><span class="dish__name">Bronte</span><span class="dish__lead"></span><span class="dish__price">15</span><p class="dish__note">Il nome dice tutto: pistacchio di Bronte.</p></li>
+          <li class="dish"><span class="dish__name">Burrata</span><span class="dish__lead"></span><span class="dish__price">15</span><p class="dish__note">Burrata aggiunta all'uscita dal forno.</p></li>
+        </ul>
+        <p class="panel__aside">Impasti lavorati dai nostri pizzaioli e cotti nel forno a legna. Chiedi le pizze speciali del momento.</p>
+      </div>
+
+      <div class="panel" role="tabpanel" id="panel-cucina" aria-labelledby="tab-cucina" hidden>
+        <div class="dishes-cols">
+          <div>
+            <h3 class="dishes__group">Antipasti</h3>
+            <ul class="dishes">
+              <li class="dish"><span class="dish__name">Antipasto Toronero</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">in sala</span><p class="dish__note">Il giro di assaggi della casa.</p></li>
+              <li class="dish"><span class="dish__name">Carpaccio di manzo</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">in sala</span></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="dishes__group">Primi</h3>
+            <ul class="dishes">
+              <li class="dish"><span class="dish__name">Tagliatelle al ragù di cinghiale</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">in sala</span></li>
+              <li class="dish"><span class="dish__name">Risotto al pistacchio</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">in sala</span></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="dishes__group">Dolci</h3>
+            <ul class="dishes">
+              <li class="dish"><span class="dish__name">Crème caramel</span><span class="dish__lead"></span><span class="dish__price dish__price--weight">in sala</span><p class="dish__note">Fatto in casa.</p></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p class="menu__foot">Prezzi in euro. Piatti e prezzi possono cambiare con la stagione e la disponibilità delle carni. <strong>Opzioni senza glutine</strong> su richiesta: avvisaci quando prenoti.</p>
+    </div>
+  </section>
+
+  <!-- SALE -->
+  <section class="rooms" id="sale" aria-labelledby="rooms-title">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">500 m² · 360 coperti</p>
+        <h2 id="rooms-title">Quattro sale, una brace.</h2>
+        <p class="section-head__lede">Ogni punto rappresenta un posto a sedere. Scegli la sala quando prenoti.</p>
+      </header>
+
+      <div class="plan" aria-label="Pianta schematica delle sale">
+        <article class="room room--pizzeria">
+          <header><h3>Pizzeria</h3><p class="room__seats"><b>120</b> posti</p></header>
+          <p>Il forno a legna davanti a te. Ideale per gruppi e serate informali.</p>
+          <div class="seats" data-seats="120" aria-hidden="true"></div>
+        </article>
+        <article class="room room--eventi">
+          <header><h3>Sala eventi</h3><p class="room__seats"><b>120</b> posti</p></header>
+          <p>Riservabile per compleanni, anniversari, lauree e cene aziendali.</p>
+          <div class="seats" data-seats="120" aria-hidden="true"></div>
+        </article>
+        <article class="room room--ristorante">
+          <header><h3>Ristorante</h3><p class="room__seats"><b>70</b> posti</p></header>
+          <p>La sala più raccolta, per la cena di carne.</p>
+          <div class="seats" data-seats="70" aria-hidden="true"></div>
+        </article>
+        <article class="room room--fumatori">
+          <header><h3>Sala fumatori</h3><p class="room__seats"><b>50</b> posti</p></header>
+          <p>Unica a Messina: una sala interna dove è consentito fumare.</p>
+          <div class="seats" data-seats="50" aria-hidden="true"></div>
+        </article>
+      </div>
+      <p class="plan__note">Pianta schematica, non in scala.</p>
+    </div>
+  </section>
+
+  <!-- EVENTI -->
+  <section class="events" id="eventi" aria-labelledby="events-title">
+    <div class="wrap events__inner">
+      <div class="events__text">
+        <p class="eyebrow">Feste ed eventi</p>
+        <h2 id="events-title">La tua festa, fino a 120 ospiti.</h2>
+        <p>Una sala dedicata, un menu costruito con te e una cucina che dal 2009 lavora per i grandi numeri senza perdere la cura del singolo piatto.</p>
+        <a class="btn btn--fire" href="#prenota" data-occasion="Evento privato">Richiedi un preventivo</a>
+      </div>
+      <ul class="occasions" aria-label="Occasioni">
+        <li>Compleanni</li>
+        <li>Lauree</li>
+        <li>Anniversari</li>
+        <li>Cene aziendali</li>
+        <li>Battesimi e comunioni</li>
+        <li>Cene di squadra</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- RAIS -->
+  <section class="rais" id="rais" aria-labelledby="rais-title">
+    <canvas class="rais__waves" id="waves" aria-hidden="true"></canvas>
+    <div class="wrap rais__inner">
+      <p class="eyebrow eyebrow--sea">L'altra dimensione del Toronero</p>
+      <h2 class="rais__title" id="rais-title">Rais</h2>
+      <div class="rais__cols">
+        <p class="rais__lede">Sulla via Consolare Pompea, il Toronero guarda il mare. Al Rais la stessa cucina e la stessa accoglienza si dedicano al pesce: freschissimo, lavorato dai nostri chef, dall'antipasto al dolce.</p>
+        <dl class="rais__facts">
+          <div><dt>Dove</dt><dd>Via Consolare Pompea 59/83, Messina</dd></div>
+          <div><dt>Coperti</dt><dd>50</dd></div>
+          <div><dt>In tavola</dt><dd>Pesce, e accanto la carne e la pizza di casa</dd></div>
+        </dl>
+      </div>
+      <a class="btn btn--sea" href="https://www.untavolo.it/ristorante/rais-toronero" target="_blank" rel="noopener">Prenota al Rais</a>
+    </div>
+  </section>
+
+  <!-- PRENOTA -->
+  <section class="book" id="prenota" aria-labelledby="book-title">
+    <div class="wrap book__inner">
+      <div class="book__intro">
+        <p class="eyebrow">Prenotazioni</p>
+        <h2 id="book-title">Ti teniamo un posto vicino alla brace.</h2>
+        <p>Compila la richiesta: si apre la tua email già pronta da inviare. Per stasera o per gruppi numerosi, chiamaci.</p>
+        <div class="phone-block">
+          <span class="phone-block__label">Telefono</span>
+          <a class="phone-block__num" href="tel:+390902931640">090 293 1640</a>
+          <button class="copy" type="button" data-copy="+39 090 293 1640">Copia numero</button>
+        </div>
+        <p class="book__alt">Preferisci prenotare online? <a href="https://www.untavolo.it/ristorante/toronero" target="_blank" rel="noopener">Prenota su UnTavolo</a></p>
+      </div>
+
+      <form class="form" id="book-form" novalidate>
+        <div class="field">
+          <label for="f-name">Nome e cognome</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Mario Rossi">
+        </div>
+        <div class="field">
+          <label for="f-phone">Telefono</label>
+          <input id="f-phone" name="phone" type="tel" autocomplete="tel" required placeholder="333 123 4567">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-date">Giorno</label>
+            <input id="f-date" name="date" type="date" required>
+          </div>
+          <div class="field">
+            <label for="f-time">Orario</label>
+            <select id="f-time" name="time" required>
+              <optgroup label="Pranzo">
+                <option>12:30</option><option>13:00</option><option>13:30</option><option>14:00</option>
+              </optgroup>
+              <optgroup label="Cena">
+                <option>19:30</option><option>20:00</option><option selected>20:30</option><option>21:00</option><option>21:30</option><option>22:00</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="field field--narrow">
+            <label for="f-guests">Persone</label>
+            <input id="f-guests" name="guests" type="number" min="1" max="120" value="2" required inputmode="numeric">
+          </div>
+        </div>
+        <fieldset class="field">
+          <legend>Sala preferita</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="room" value="Ristorante" checked><span>Ristorante</span></label>
+            <label class="chip"><input type="radio" name="room" value="Pizzeria"><span>Pizzeria</span></label>
+            <label class="chip"><input type="radio" name="room" value="Sala fumatori"><span>Sala fumatori</span></label>
+            <label class="chip"><input type="radio" name="room" value="Evento privato"><span>Evento privato</span></label>
+          </div>
+        </fieldset>
+        <div class="field">
+          <label for="f-notes">Note</label>
+          <textarea id="f-notes" name="notes" rows="3" placeholder="Allergie, senza glutine, seggiolone, torta…"></textarea>
+        </div>
+        <button class="btn btn--fire btn--block" type="submit">Prepara la richiesta</button>
+        <p class="form__msg" id="form-msg" role="status"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div class="footer__brand">
+      <p class="footer__name">Toronero</p>
+      <p>Ristorante · Steak house · Pizzeria<br>Amiamo cucinare, dal 2009.</p>
+    </div>
+    <div>
+      <h3 class="footer__h">Dove</h3>
+      <p>Via Giuseppe La Farina 185<br>98123 Messina</p>
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=Toronero+Via+La+Farina+185+Messina" target="_blank" rel="noopener">Apri in Google Maps</a>
+    </div>
+    <div>
+      <h3 class="footer__h">Orari</h3>
+      <table class="hours">
+        <tr><th scope="row">Pranzo</th><td>12:00–15:00</td></tr>
+        <tr><th scope="row">Cena</th><td>19:30–23:30</td></tr>
+      </table>
+      <p class="footer__small">Aperti tutti i giorni.</p>
+    </div>
+    <div>
+      <h3 class="footer__h">Contatti</h3>
+      <p><a href="tel:+390902931640">090 293 1640</a><br><a href="mailto:toronerosrl@gmail.com">toronerosrl@gmail.com</a></p>
+      <a href="https://www.facebook.com/toronerome/" target="_blank" rel="noopener">Facebook</a>
+    </div>
+  </div>
+  <div class="wrap footer__base">
+    <p>© <span id="year">2026</span> Toronero S.r.l. · Messina</p>
+    <a href="#top">Torna su ↑</a>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

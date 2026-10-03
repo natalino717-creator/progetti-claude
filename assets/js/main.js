@@ -1,371 +1,318 @@
 (function () {
   "use strict";
 
+  var MENU = window.TORONERO_MENU || [];
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var $ = function (id) { return document.getElementById(id); };
 
   /* ---------- mobile nav ---------- */
-  var toggle = document.getElementById("nav-toggle");
-  var links = document.getElementById("nav-links");
+  var toggle = $("nav-toggle"), links = $("nav-links");
+  function closeNav() {
+    links.classList.remove("is-open");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.textContent = "Menu";
+  }
   if (toggle && links) {
     toggle.addEventListener("click", function () {
       var open = links.classList.toggle("is-open");
       toggle.setAttribute("aria-expanded", String(open));
       toggle.textContent = open ? "Chiudi" : "Menu";
     });
-    links.addEventListener("click", function (e) {
-      if (e.target.tagName === "A" && links.classList.contains("is-open")) {
-        links.classList.remove("is-open");
-        toggle.setAttribute("aria-expanded", "false");
-        toggle.textContent = "Menu";
-      }
-    });
+    links.addEventListener("click", function (e) { if (e.target.tagName === "A") closeNav(); });
   }
 
-  /* ---------- open / closed, on Messina time ---------- */
+  /* ---------- open / closed on Messina time ---------- */
   var SLOTS = [[12 * 60, 15 * 60], [19 * 60 + 30, 23 * 60 + 30]];
-  function fmt(min) {
-    var h = Math.floor(min / 60), m = min % 60;
-    return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
-  }
+  function hhmm(min) { var h = Math.floor(min / 60), m = min % 60; return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m; }
   function romeMinutes() {
     try {
-      var parts = new Intl.DateTimeFormat("it-IT", {
-        timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit", hourCycle: "h23"
-      }).formatToParts(new Date());
       var h = 0, m = 0;
-      parts.forEach(function (p) {
-        if (p.type === "hour") h = parseInt(p.value, 10);
-        if (p.type === "minute") m = parseInt(p.value, 10);
-      });
+      new Intl.DateTimeFormat("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+        .formatToParts(new Date()).forEach(function (p) {
+          if (p.type === "hour") h = +p.value;
+          if (p.type === "minute") m = +p.value;
+        });
       return h * 60 + m;
-    } catch (e) {
-      var d = new Date();
-      return d.getHours() * 60 + d.getMinutes();
-    }
+    } catch (e) { var d = new Date(); return d.getHours() * 60 + d.getMinutes(); }
   }
   function updateStatus() {
-    var el = document.getElementById("open-status");
-    if (!el) return;
+    var el = $("open-status"); if (!el) return;
     var now = romeMinutes();
     for (var i = 0; i < SLOTS.length; i++) {
-      if (now >= SLOTS[i][0] && now < SLOTS[i][1]) {
-        el.dataset.state = "open";
-        el.textContent = "Aperto ora · fino alle " + fmt(SLOTS[i][1]);
-        return;
-      }
-      if (now < SLOTS[i][0]) {
-        el.dataset.state = "closed";
-        el.textContent = "Chiuso · apre alle " + fmt(SLOTS[i][0]);
-        return;
-      }
+      if (now >= SLOTS[i][0] && now < SLOTS[i][1]) { el.dataset.state = "open"; el.textContent = "Aperto ora · fino alle " + hhmm(SLOTS[i][1]); return; }
+      if (now < SLOTS[i][0]) { el.dataset.state = "closed"; el.textContent = "Chiuso · apre alle " + hhmm(SLOTS[i][0]); return; }
     }
-    el.dataset.state = "closed";
-    el.textContent = "Chiuso · domani dalle " + fmt(SLOTS[0][0]);
+    el.dataset.state = "closed"; el.textContent = "Chiuso · domani dalle " + hhmm(SLOTS[0][0]);
   }
-  updateStatus();
-  setInterval(updateStatus, 60000);
+  updateStatus(); setInterval(updateStatus, 60000);
 
-  /* ---------- embers ---------- */
-  function embers(canvas) {
-    var ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = 0, h = 0, parts = [];
-    function size() {
-      var r = canvas.getBoundingClientRect();
-      w = r.width; h = r.height;
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      var count = Math.round(Math.min(90, w / 14));
-      parts = [];
-      for (var i = 0; i < count; i++) parts.push(spawn(true));
-    }
-    function spawn(anywhere) {
-      return {
-        x: Math.random() * w,
-        y: anywhere ? Math.random() * h : h + 10,
-        r: 0.6 + Math.random() * 1.8,
-        vy: 0.25 + Math.random() * 0.7,
-        drift: Math.random() * Math.PI * 2,
-        life: 0.4 + Math.random() * 0.6
-      };
-    }
-    function frame() {
-      ctx.clearRect(0, 0, w, h);
-      for (var i = 0; i < parts.length; i++) {
-        var p = parts[i];
-        p.y -= p.vy;
-        p.drift += 0.015;
-        p.x += Math.sin(p.drift) * 0.35;
-        var t = Math.max(0, p.y / h);           // 1 at the bottom, 0 at the top
-        var a = Math.min(1, t * 1.4) * p.life;
-        ctx.beginPath();
-        ctx.fillStyle = "rgba(255," + Math.round(120 + 70 * (1 - t)) + ",60," + a.toFixed(3) + ")";
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
-        if (p.y < -10) parts[i] = spawn(false);
-      }
-      if (running) requestAnimationFrame(frame);
-    }
-    var running = false;
-    size();
-    window.addEventListener("resize", size);
-    if (reduceMotion) { frame(); return; }
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (entries) {
-        var vis = entries[0].isIntersecting;
-        if (vis && !running) { running = true; requestAnimationFrame(frame); }
-        else if (!vis) running = false;
-      }).observe(canvas);
-    } else {
-      running = true; requestAnimationFrame(frame);
-    }
+  /* ---------- menu ---------- */
+  function norm(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function euro(p) { return "€ " + (p % 1 ? p.toFixed(2).replace(".", ",") : p); }
+
+  // flatten once: every dish knows its category and group
+  var DISHES = [];
+  MENU.forEach(function (cat) {
+    var groups = cat.groups || [{ g: "", items: cat.items }];
+    groups.forEach(function (gr) {
+      gr.items.forEach(function (it) {
+        DISHES.push({ cat: cat, group: gr.g, it: it, hay: norm([it.n, it.d, it.o, gr.g, cat.title].join(" ")) });
+      });
+    });
+  });
+
+  function highlight(text, terms) {
+    text = String(text);
+    // collect match ranges on the accent-folded raw text (same length for Latin letters),
+    // merge them, then escape segment by segment so marks never land inside markup
+    var folded = norm(text), ranges = [];
+    terms.forEach(function (t) {
+      if (t.length < 2) return;
+      for (var at = folded.indexOf(t); at !== -1; at = folded.indexOf(t, at + t.length)) ranges.push([at, at + t.length]);
+    });
+    if (!ranges.length || folded.length !== text.length) return esc(text);
+    ranges.sort(function (a, b) { return a[0] - b[0]; });
+    var out = "", i = 0;
+    ranges.forEach(function (r) {
+      if (r[1] <= i) return;
+      var s = Math.max(r[0], i);
+      out += esc(text.slice(i, s)) + "<mark>" + esc(text.slice(s, r[1])) + "</mark>";
+      i = r[1];
+    });
+    return out + esc(text.slice(i));
   }
-  var emberCanvas = document.getElementById("embers");
-  if (emberCanvas) embers(emberCanvas);
 
-  /* ---------- Rais waves ---------- */
-  function waves(canvas) {
-    var ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2), w = 0, h = 0, t = 0, running = false;
-    function size() {
-      var r = canvas.getBoundingClientRect();
-      w = r.width; h = r.height;
-      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    function draw() {
-      ctx.clearRect(0, 0, w, h);
-      ctx.lineWidth = 1;
-      for (var k = 0; k < 9; k++) {
-        var base = h * 0.35 + k * (h * 0.075);
-        ctx.strokeStyle = "rgba(127,196,201," + (0.05 + k * 0.02).toFixed(3) + ")";
-        ctx.beginPath();
-        for (var x = 0; x <= w; x += 8) {
-          var y = base + Math.sin(x * 0.008 + t + k * 0.7) * (6 + k * 1.2) + Math.sin(x * 0.021 - t * 1.3) * 3;
-          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  function dishHTML(d, terms) {
+    var it = d.it;
+    var price = '<span class="dish__price">' + euro(it.p) + (it.unit ? "<small>" + esc(it.unit) + "</small>" : "") + "</span>";
+    return '<li class="dish">' +
+      '<span class="dish__name">' + highlight(it.n, terms) +
+        (it.o ? '<span class="dish__origin">' + highlight(it.o, terms) + "</span>" : "") +
+        (it.tag ? '<span class="dish__tag">' + esc(it.tag) + "</span>" : "") +
+      "</span>" + price +
+      (it.d ? '<p class="dish__desc">' + highlight(it.d, terms) + "</p>" : "") +
+      "</li>";
+  }
+
+  var body = $("menu-body"), cats = $("menu-cats"), empty = $("menu-empty"), filterBar = $("menu-filter"), search = $("menu-search");
+
+  function renderMenu(query) {
+    var terms = norm(query).split(/\s+/).filter(Boolean);
+    var html = "", shown = 0;
+    MENU.forEach(function (cat) {
+      var rows = DISHES.filter(function (d) {
+        return d.cat === cat && terms.every(function (t) { return d.hay.indexOf(t) !== -1; });
+      });
+      if (!rows.length) return;
+      shown += rows.length;
+      html += '<section class="cat" id="cat-' + cat.id + '" aria-labelledby="cat-t-' + cat.id + '">' +
+        '<header class="cat__head"><h3 class="cat__title" id="cat-t-' + cat.id + '">' + esc(cat.title) + "</h3>" +
+        (cat.note ? '<p class="cat__note">' + esc(cat.note) + "</p>" : "") + "</header>";
+      var lastGroup = null, open = false;
+      rows.forEach(function (d) {
+        if (d.group !== lastGroup) {
+          if (open) html += "</ul>";
+          if (d.group) html += '<h4 class="cat__group">' + esc(d.group) + "</h4>";
+          html += '<ul class="dishes">'; open = true; lastGroup = d.group;
         }
-        ctx.stroke();
+        html += dishHTML(d, terms);
+      });
+      if (open) html += "</ul>";
+      html += "</section>";
+    });
+    body.innerHTML = html;
+    empty.hidden = shown > 0;
+
+    // category chips mirror what's visible
+    cats.innerHTML = MENU.filter(function (c) { return $("cat-" + c.id); }).map(function (c) {
+      return '<a href="#cat-' + c.id + '" data-cat="' + c.id + '">' + esc(c.short) + "</a>";
+    }).join("");
+
+    if (terms.length) {
+      filterBar.hidden = false;
+      filterBar.innerHTML = "<span>" + shown + (shown === 1 ? " piatto" : " piatti") + " per «" + esc(query.trim()) + "»</span>" +
+        '<button type="button" id="menu-clear">Mostra tutto il menu</button>';
+      $("menu-clear").addEventListener("click", function () { setQuery(""); search.focus(); });
+    } else {
+      filterBar.hidden = true; filterBar.innerHTML = "";
+    }
+    observeCats();
+  }
+
+  var spy = null;
+  function observeCats() {
+    if (!("IntersectionObserver" in window)) return;
+    if (spy) spy.disconnect();
+    spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var id = e.target.id.replace("cat-", "");
+        cats.querySelectorAll("a").forEach(function (a) {
+          var on = a.dataset.cat === id;
+          a.classList.toggle("is-current", on);
+          if (on && a.scrollIntoView && !reduceMotion) {
+            var r = a.getBoundingClientRect(), cr = cats.getBoundingClientRect();
+            if (r.left < cr.left || r.right > cr.right) cats.scrollBy({ left: r.left - cr.left - 24, behavior: "smooth" });
+          }
+        });
+      });
+    }, { rootMargin: "-35% 0px -60% 0px" });
+    body.querySelectorAll(".cat").forEach(function (s) { spy.observe(s); });
+  }
+
+  var searchTimer;
+  function setQuery(q) {
+    search.value = q;
+    renderMenu(q);
+    syncTags(q);
+  }
+  if (body && search) {
+    renderMenu("");
+    search.addEventListener("input", function () {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(function () { renderMenu(search.value); syncTags(search.value); }, 120);
+    });
+  }
+
+  /* ---------- meat tags (cella) ---------- */
+  var MEATS = [
+    { n: "Scottona", o: "Italia", q: "scottona" },
+    { n: "Chianina IGP", o: "Italia", q: "chianina" },
+    { n: "Vacche grasse", o: "Italia", q: "vacche grasse" },
+    { n: "Frisona", o: "Emilia-Romagna", q: "frisona" },
+    { n: "Fassona", o: "Piemonte", q: "fassona" },
+    { n: "Rubia Gallega", o: "Spagna", q: "rubia gallega" },
+    { n: "Sashi", o: "Finlandia", q: "sashi" },
+    { n: "Picanha", o: "Argentina · Danimarca · Finlandia", q: "picanha" },
+    { n: "Black Angus", o: "Stati Uniti · Argentina", q: "black angus" },
+    { n: "Danish Crown", o: "Danimarca", q: "danish crown" },
+    { n: "Manzetto baltico", o: "Paesi baltici", q: "manzetto baltico" },
+    { n: "Wagyu", o: "Giappone · Kagoshima", q: "wagyu" }
+  ];
+  var tagBox = $("meat-tags");
+  function matches(q) {
+    var t = norm(q).split(/\s+/);
+    return DISHES.filter(function (d) { return t.every(function (x) { return d.hay.indexOf(x) !== -1; }); });
+  }
+  if (tagBox) {
+    tagBox.innerHTML = MEATS.map(function (m, i) {
+      var rows = matches(m.q);
+      var perPiece = rows.filter(function (d) { return !d.it.unit; });
+      var pool = perPiece.length ? perPiece : rows;
+      var min = pool.reduce(function (a, d) { return Math.min(a, d.it.p); }, Infinity);
+      var unit = perPiece.length ? "" : " /kg";
+      return '<button type="button" class="tag" role="listitem" aria-pressed="false" data-q="' + esc(m.q) + '">' +
+        '<span class="tag__origin">' + esc(m.o) + "</span>" +
+        '<span class="tag__name">' + esc(m.n) + "</span>" +
+        '<span class="tag__price"><span>' + rows.length + (rows.length === 1 ? " piatto" : " piatti") + "</span>" +
+        "<span>da <b>" + euro(min) + unit + "</b></span></span></button>";
+    }).join("");
+    tagBox.addEventListener("click", function (e) {
+      var b = e.target.closest(".tag"); if (!b) return;
+      var q = b.getAttribute("aria-pressed") === "true" ? "" : b.dataset.q;
+      setQuery(q);
+      if (q) $("menu").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    });
+  }
+  function syncTags(q) {
+    if (!tagBox) return;
+    var nq = norm(q).trim();
+    tagBox.querySelectorAll(".tag").forEach(function (b) { b.setAttribute("aria-pressed", String(nq !== "" && nq === norm(b.dataset.q))); });
+  }
+
+  /* ---------- room galleries ---------- */
+  document.querySelectorAll("[data-room]").forEach(function (room) {
+    var main = room.querySelector(".room__main");
+    room.querySelectorAll(".room__thumbs button").forEach(function (btn) {
+      btn.setAttribute("aria-label", "Mostra: " + btn.dataset.alt);
+      btn.addEventListener("click", function () {
+        room.querySelectorAll(".room__thumbs button").forEach(function (b) { b.classList.toggle("is-active", b === btn); });
+        if (reduceMotion) { main.src = btn.dataset.src; main.alt = btn.dataset.alt; return; }
+        main.style.opacity = "0.2";
+        setTimeout(function () { main.src = btn.dataset.src; main.alt = btn.dataset.alt; main.style.opacity = "1"; }, 160);
+      });
+    });
+  });
+
+  /* ---------- 360° tour ---------- */
+  var TOUR_URL = "https://storage.net-fs.com/hosting/8290082/2/";
+  var dlg = $("tour-dialog"), frame = $("tour-frame");
+  if ($("tour-open")) {
+    $("tour-open").addEventListener("click", function () {
+      if (!dlg || typeof dlg.showModal !== "function") { window.open(TOUR_URL, "_blank", "noopener"); return; }
+      if (!frame.firstChild) {
+        var f = document.createElement("iframe");
+        f.src = TOUR_URL; f.title = "Tour virtuale a 360° di Toronero";
+        f.allow = "fullscreen; accelerometer; gyroscope; xr-spatial-tracking"; f.allowFullscreen = true;
+        frame.appendChild(f);
       }
-    }
-    function frame() { t += 0.008; draw(); if (running) requestAnimationFrame(frame); }
-    size(); draw();
-    window.addEventListener("resize", function () { size(); draw(); });
-    if (reduceMotion || !("IntersectionObserver" in window)) return;
-    new IntersectionObserver(function (entries) {
-      var vis = entries[0].isIntersecting;
-      if (vis && !running) { running = true; requestAnimationFrame(frame); }
-      else if (!vis) running = false;
-    }).observe(canvas);
+      dlg.showModal();
+    });
+    $("tour-close").addEventListener("click", function () { dlg.close(); });
+    dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
   }
-  var waveCanvas = document.getElementById("waves");
-  if (waveCanvas) waves(waveCanvas);
 
-  /* ---------- cut chart ---------- */
-  var CUTS = {
-    collo: {
-      num: "01", name: "Collo e spalla",
-      desc: "Tagli saporiti e ricchi di collagene. Li maciniamo per i nostri hamburger, compreso quello di Wagyu.",
-      dish: "Burger, anche di Wagyu", cook: "Alla piastra, cuore rosato", price: ""
-    },
-    costata: {
-      num: "02", name: "Costata e tomahawk",
-      desc: "La parte alta delle costole: marezzatura generosa e grasso che si scioglie sulla brace. Il tomahawk è la costata con l'osso lungo.",
-      dish: "Costata di scottona, Angus o Wagyu", cook: "Al sangue o media, riposo prima del taglio", price: "al peso"
-    },
-    lombata: {
-      num: "03", name: "Controfiletto e fiorentina",
-      desc: "La lombata: da qui nascono lo striploin e, con l'osso a T, la fiorentina. Fibra compatta, grasso di copertura che sulla brace diventa crosta.",
-      dish: "Controfiletto di scottona", cook: "Al sangue o media, sulla brace", price: "€24"
-    },
-    filetto: {
-      num: "04", name: "Filetto",
-      desc: "Il muscolo che lavora meno, quindi il più tenero. Poco grasso, sapore delicato, va trattato con rispetto.",
-      dish: "Filetto alla brace", cook: "Al sangue", price: ""
-    },
-    petto: {
-      num: "05", name: "Petto e pancia",
-      desc: "Tagli da pazienza: fibre lunghe e grasso che con le cotture lente diventano morbidissimi.",
-      dish: "Specialità barbecue", cook: "Bassa temperatura, poi brace", price: ""
-    },
-    scamone: {
-      num: "06", name: "Scamone",
-      desc: "Tra lombata e coscia, magro ma succoso. È il taglio ideale per la tagliata, uno dei piatti più amati di casa.",
-      dish: "Tagliata di manzo", cook: "Media, tagliata a fette spesse", price: ""
-    },
-    fesa: {
-      num: "07", name: "Fesa e coscia",
-      desc: "Carne magra e pulita, perfetta da mangiare cruda: battuta al coltello o in fette sottilissime.",
-      dish: "Tartare e carpaccio", cook: "Cruda", price: ""
-    }
-  };
-  var card = document.getElementById("cut-card");
-  var cutEls = document.querySelectorAll(".cut");
-  function setText(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
-  function selectCut(key) {
-    var c = CUTS[key];
-    if (!c || !card) return;
-    cutEls.forEach(function (el) {
-      var on = el.getAttribute("data-cut") === key;
-      el.classList.toggle("is-active", on);
-      el.setAttribute("aria-pressed", String(on));
-    });
-    setText("cut-num", c.num);
-    setText("cut-name", c.name);
-    setText("cut-desc", c.desc);
-    setText("cut-dish", c.dish);
-    setText("cut-cook", c.cook);
-    var price = document.getElementById("cut-price");
-    if (price) {
-      if (c.price === "") {
-        price.innerHTML = "<span>prezzo</span> in sala";
-      } else if (c.price === "al peso") {
-        price.innerHTML = "<span>prezzo</span> al peso";
-      } else {
-        price.innerHTML = "<span>da</span> " + c.price;
-      }
-    }
-    card.classList.remove("is-swapping");
-    void card.offsetWidth;
-    card.classList.add("is-swapping");
-  }
-  cutEls.forEach(function (el) {
-    var key = el.getAttribute("data-cut");
-    el.addEventListener("click", function () { selectCut(key); });
-    el.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCut(key); }
-    });
-  });
-  selectCut("lombata");
-
-  /* ---------- menu tabs ---------- */
-  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
-  function activate(tab, focus) {
-    tabs.forEach(function (t) {
-      var on = t === tab;
-      t.setAttribute("aria-selected", String(on));
-      t.tabIndex = on ? 0 : -1;
-      var panel = document.getElementById(t.getAttribute("aria-controls"));
-      if (panel) panel.hidden = !on;
-    });
-    if (focus) tab.focus();
-  }
-  tabs.forEach(function (tab, i) {
-    tab.addEventListener("click", function () { activate(tab, false); });
-    tab.addEventListener("keydown", function (e) {
-      var next = null;
-      if (e.key === "ArrowRight") next = tabs[(i + 1) % tabs.length];
-      if (e.key === "ArrowLeft") next = tabs[(i - 1 + tabs.length) % tabs.length];
-      if (e.key === "Home") next = tabs[0];
-      if (e.key === "End") next = tabs[tabs.length - 1];
-      if (next) { e.preventDefault(); activate(next, true); }
-    });
-  });
-
-  /* ---------- seats ---------- */
-  document.querySelectorAll(".seats").forEach(function (box) {
-    var n = parseInt(box.getAttribute("data-seats"), 10) || 0;
-    var frag = document.createDocumentFragment();
-    for (var i = 0; i < n; i++) {
-      var dot = document.createElement("i");
-      dot.style.setProperty("--i", i);
-      frag.appendChild(dot);
-    }
-    box.appendChild(frag);
-  });
-
-  /* ---------- booking form ---------- */
-  var form = document.getElementById("book-form");
-  var msg = document.getElementById("form-msg");
-  var dateInput = document.getElementById("f-date");
+  /* ---------- booking ---------- */
+  var form = $("book-form"), msg = $("form-msg"), dateInput = $("f-date");
   if (dateInput) {
-    var today = new Date();
-    var iso = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-    dateInput.min = iso;
-    if (!dateInput.value) dateInput.value = iso;
+    var t = new Date(), iso = new Date(t.getTime() - t.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    dateInput.min = iso; if (!dateInput.value) dateInput.value = iso;
   }
-
-  // "Richiedi un preventivo" preselects the private-event room
   document.querySelectorAll("[data-occasion]").forEach(function (a) {
     a.addEventListener("click", function () {
-      var v = a.getAttribute("data-occasion");
-      var radio = form && form.querySelector('input[name="room"][value="' + v + '"]');
-      if (radio) radio.checked = true;
+      var r = form && form.querySelector('input[name="room"][value="' + a.dataset.occasion + '"]');
+      if (r) r.checked = true;
     });
   });
-
-  function say(text, kind) {
-    if (!msg) return;
-    msg.textContent = text;
-    msg.className = "form__msg" + (kind ? " is-" + kind : "");
-  }
-
+  function say(text, kind) { msg.textContent = text; msg.className = "form__msg" + (kind ? " is-" + kind : ""); }
   if (form) {
+    var via = "whatsapp";
+    form.querySelectorAll("[data-via]").forEach(function (b) { b.addEventListener("click", function () { via = b.dataset.via; }); });
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      var required = ["f-name", "f-phone", "f-date", "f-guests"];
-      var firstBad = null;
-      required.forEach(function (id) {
-        var el = document.getElementById(id);
-        var bad = !el.value.trim() || (el.type === "number" && (+el.value < 1));
-        el.setAttribute("aria-invalid", String(bad));
-        if (bad && !firstBad) firstBad = el;
+      var bad = null;
+      ["f-name", "f-date", "f-guests"].forEach(function (id) {
+        var el = $(id), invalid = !el.value.trim() || (el.type === "number" && +el.value < 1);
+        el.setAttribute("aria-invalid", String(invalid));
+        if (invalid && !bad) bad = el;
       });
-      if (firstBad) {
-        say("Mancano alcuni dati: controlla i campi evidenziati.", "error");
-        firstBad.focus();
-        return;
-      }
+      if (bad) { say("Mancano alcuni dati: controlla i campi evidenziati.", "error"); bad.focus(); return; }
       var data = new FormData(form);
       var d = new Date(data.get("date") + "T12:00:00");
-      var dateLabel = isNaN(d) ? data.get("date") : d.toLocaleDateString("it-IT", { weekday: "long", day: "numeric", month: "long" });
-      var body = [
-        "Buongiorno, vorrei prenotare un tavolo al Toronero.",
-        "",
+      var day = isNaN(d) ? data.get("date") : d.toLocaleDateString("it-IT", { weekday: "long", day: "numeric", month: "long" });
+      var lines = [
+        "Buongiorno, vorrei prenotare un tavolo da Toronero.",
         "Nome: " + data.get("name"),
-        "Telefono: " + data.get("phone"),
-        "Giorno: " + dateLabel,
+        "Giorno: " + day,
         "Orario: " + data.get("time"),
         "Persone: " + data.get("guests"),
-        "Sala: " + data.get("room"),
-        data.get("notes") ? "Note: " + data.get("notes") : "",
-        "",
-        "Grazie!"
-      ].filter(function (l, i, arr) { return l !== "" || arr[i - 1] !== ""; }).join("\n");
-      var subject = "Prenotazione " + dateLabel + " ore " + data.get("time") + " · " + data.get("guests") + " persone";
-      window.location.href = "mailto:toronerosrl@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-      say("Richiesta pronta: inviala dalla tua email. La prenotazione è confermata solo dopo la nostra risposta. Se l'email non si apre, chiama lo 090 293 1640.", "ok");
+        "Sala: " + data.get("room")
+      ];
+      if (data.get("notes")) lines.push("Note: " + data.get("notes"));
+      var text = lines.join("\n");
+      if (via === "email") {
+        var subject = "Prenotazione " + day + " ore " + data.get("time") + " · " + data.get("guests") + " persone";
+        window.location.href = "mailto:toronerosrl@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(text);
+        say("Si apre la tua email con la richiesta pronta. La prenotazione è confermata quando ti rispondiamo.", "ok");
+      } else {
+        window.open("https://wa.me/393667102667?text=" + encodeURIComponent(text), "_blank", "noopener");
+        say("Si apre WhatsApp con il messaggio pronto: premi invia. La prenotazione è confermata quando ti rispondiamo.", "ok");
+      }
     });
     form.addEventListener("input", function (e) {
-      if (e.target.getAttribute("aria-invalid") === "true" && e.target.value.trim()) {
-        e.target.setAttribute("aria-invalid", "false");
-      }
+      if (e.target.getAttribute("aria-invalid") === "true" && e.target.value.trim()) e.target.setAttribute("aria-invalid", "false");
     });
   }
 
-  /* ---------- copy phone ---------- */
-  document.querySelectorAll("[data-copy]").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var v = btn.getAttribute("data-copy");
-      var done = function () { btn.textContent = "Copiato"; setTimeout(function () { btn.textContent = "Copia numero"; }, 1800); };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(v).then(done, function () { selectNumber(); });
-      } else {
-        selectNumber();
-      }
-    });
-  });
-  function selectNumber() {
-    var n = document.querySelector(".phone-block__num");
-    if (!n || !window.getSelection) return;
-    var r = document.createRange();
-    r.selectNodeContents(n);
-    var s = window.getSelection();
-    s.removeAllRanges(); s.addRange(r);
+  /* ---------- floating "Prenota" on phones, hidden over hero and booking ---------- */
+  var fab = document.querySelector(".fab");
+  if (fab && "IntersectionObserver" in window) {
+    var hidden = { hero: true, book: false };
+    var upd = function () { fab.classList.toggle("is-visible", !hidden.hero && !hidden.book); };
+    new IntersectionObserver(function (es) { hidden.hero = es[0].isIntersecting; upd(); }).observe(document.querySelector(".hero"));
+    new IntersectionObserver(function (es) { hidden.book = es[0].isIntersecting; upd(); }).observe($("prenota"));
   }
 
-  var year = document.getElementById("year");
-  if (year) year.textContent = String(new Date().getFullYear());
+  var y = $("year"); if (y) y.textContent = String(new Date().getFullYear());
 })();

@@ -1,36 +1,46 @@
 # Toronero Messina, nuovo sito
 
-Riprogettazione completa del sito di **Toronero**, ristorante steak house, pizzeria e sala eventi in via La Farina 185 a Messina.
+Riprogettazione del sito di **Toronero**, ristorante bisteccheria in via La Farina 185 a Messina, costruita sui contenuti del sito attuale [toroneromessina.it](https://toroneromessina.it/).
 
-Sito statico in HTML, CSS e JavaScript, senza dipendenze né build. Si pubblica caricando la cartella su qualsiasi hosting, compresi Netlify, Vercel e GitHub Pages.
+Sito statico in HTML, CSS e JavaScript, senza dipendenze né build. Si pubblica caricando la cartella su qualsiasi hosting, oppure come pagina in WordPress.
 
 ```
-index.html            pagina unica, con dati strutturati schema.org/Restaurant per Google
-assets/css/style.css  stile (palette e font definiti in :root)
-assets/js/main.js     interazioni
+index.html               pagina unica, con dati strutturati schema.org/Restaurant
+assets/css/style.css     stile (palette e font definiti in :root)
+assets/js/menu-data.js   il menu completo: si aggiornano qui piatti e prezzi
+assets/js/main.js        interazioni
+assets/img/              logo e foto delle sale
 ```
 
-Per vederlo in locale basta aprire `index.html` nel browser.
+## Da dove vengono i contenuti
 
-## Cosa contiene
+Il sito attuale è una pagina WordPress che mostra soltanto un tour virtuale 3DVista a schermo intero. Tutto il materiale è stato estratto da lì e dai link che contiene:
 
-- **Hero** con il motto del locale, "Amiamo cucinare", braci animate e stato *aperto/chiuso* calcolato in tempo reale sull'ora di Messina.
-- **"Scegli dal toro"**: schema dei tagli bovini interattivo, che spiega ogni taglio e il piatto che ne nasce.
-- **Menu** a schede: brace, forno a legna, cucina.
-- **Le sale**: pianta schematica in cui ogni punto è un posto a sedere (pizzeria 120, sala eventi 120, ristorante 70, sala fumatori 50).
-- **Eventi**: compleanni, lauree, anniversari, cene aziendali.
-- **Rais**: la sede di pesce in via Consolare Pompea.
-- **Prenotazioni**: modulo che prepara un'email a `toronerosrl@gmail.com`, più telefono e link a UnTavolo.
-- Accessibile (navigazione da tastiera, `prefers-reduced-motion`), responsive e ottimizzato per la SEO locale.
+| Contenuto | Fonte |
+| --- | --- |
+| Logo "Toronero, amiamo cucinare" | immagini del tour (versione chiara ricolorata per lo sfondo scuro) |
+| Testo "Chi siamo" | scheda "Chi siamo" del tour |
+| Menu completo, circa 90 voci con prezzi | menu digitale collegato dal tour, [sulmenu.it/toronero/CARTATORO](https://sulmenu.it/toronero/CARTATORO) |
+| Foto delle sale | panoramiche a 360° del tour, ritagliate in foto normali |
+| Nomi delle sale (ristorante, fumatori, lounge, eventi) | pulsanti del tour |
+| Telefoni, email, Instagram, Facebook, Google Maps | link del tour e del menu |
+| Tour a 360° | resta disponibile: si apre dal sito in una finestra |
+
+Corretti nel menu alcuni refusi evidenti dell'originale (es. "elamelle" → "e lamelle", "Tatufo" → "Tartufo", "teriyaky" → "teriyaki").
+
+## Cosa c'è di nuovo
+
+- **Hero** con la foto vera del banco carni e della brace, e stato aperto/chiuso in tempo reale.
+- **"Leggi i cartellini"**: le carni della cella (Chianina, Rubia Gallega, Wagyu…) come i cartellini appesi in frollatura. Toccandone uno, il menu si filtra sui piatti con quella carne.
+- **Menu completo** con ricerca ("pistacchio", "tartare", "Wagyu") e categorie che seguono lo scorrimento.
+- **Le sale** con gallerie di foto, **Toronero Events** con la nuova sala eventi.
+- **Prenotazione** via WhatsApp o email, con il messaggio già compilato.
+- Pulsante "Prenota" sempre visibile su telefono, accessibile da tastiera, SEO locale.
 
 ## Da verificare con il locale prima della messa online
 
-Il sito originale non era raggiungibile dall'ambiente di sviluppo. I contenuti vengono da schede pubbliche: TripAdvisor, Facebook, Pagine Gialle, UnTavolo, Sluurpy, Restaurant Guru, MeStyle e Celiachia Italia.
-
-- **Prezzi**: confermati solo quelli presenti nelle schede. Controfiletto di scottona €24; pizze Margherita €8, Caprese €10, Capricciosa €12, Pistacia €14, Bronte €15, Burrata €15. Gli altri piatti mostrano "in sala" o "al peso".
-- **Ingredienti delle pizze** speciali (Pistacia, Bronte, Burrata): le descrizioni sono generiche.
-- **Orari**: tutti i giorni 12:00–15:00 e 19:30–23:30, come da schede pubbliche.
-- **Rais**: indirizzo via Consolare Pompea 59/83 e 50 coperti. Va verificato se è aperto tutto l'anno o solo in estate.
-- **Foto**: il sito è costruito su tipografia e illustrazione. Con le foto reali di sale e piatti si può aggiungere una galleria.
-- **Logo**: il marchio con le corna è provvisorio e va sostituito con quello ufficiale.
-- **Instagram, WhatsApp, P.IVA**: da aggiungere se disponibili.
+- **WhatsApp**: il modulo invia al numero 366 710 2667 (trovato nel menu digitale). Va confermato che quel numero usa WhatsApp.
+- **Orari** (tutti i giorni 12–15 e 19:30–23:30) e **posti a sedere** (ristorante 70, fumatori 50, eventi 120): non sono sul sito attuale, vengono da schede pubbliche come TripAdvisor e Pagine Gialle.
+- **Sala lounge**: le foto usate sono una stima di quale ambiente del tour sia la lounge.
+- **Pizzeria**: il logo del tour dice "Ristorante Bisteccheria Pizzeria", ma il menu digitale non contiene pizze. Se c'è una carta delle pizze, si aggiunge in `menu-data.js`.
+- **Foto**: vengono da una fotocamera a 360°, quindi la qualità è discreta. Con foto professionali di piatti e sale il sito fa un ulteriore salto.
